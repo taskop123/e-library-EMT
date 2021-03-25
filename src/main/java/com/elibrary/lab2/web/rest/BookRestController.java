@@ -2,6 +2,7 @@ package com.elibrary.lab2.web.rest;
 
 import com.elibrary.lab2.model.Book;
 import com.elibrary.lab2.model.dto.BookDto;
+import com.elibrary.lab2.model.enumerations.Category;
 import com.elibrary.lab2.service.BookService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,18 @@ public class BookRestController {
     @GetMapping("/pagination")
     public List<Book> findAllWithPagination(Pageable pageable){
         return this.bookService.findAllWithPagination(pageable).getContent();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Book> findById(@PathVariable Long id){
+        return this.bookService.findById(id)
+                .map(book -> ResponseEntity.ok().body(book))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    @GetMapping("/categories")
+    public List<Category> findAllCategories(){
+        return this.bookService.listAllCategories();
     }
 
     @PostMapping("/add")
@@ -60,5 +73,14 @@ public class BookRestController {
 
     }
 
+
+    @GetMapping("/reserve/{id}")
+    public ResponseEntity reserveBookById(@PathVariable Long id){
+
+        this.bookService.reserveBook(id);
+
+        return ResponseEntity.ok().build();
+
+    }
 
 }

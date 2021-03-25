@@ -27,6 +27,10 @@ public interface BookService {
 
     Optional<Book> edit(Long id, BookDto bookDto);
 
+    void reserveBook(Long id);
+
+    List<Category> listAllCategories();
+
     void deleteById(Long id);
 
 }

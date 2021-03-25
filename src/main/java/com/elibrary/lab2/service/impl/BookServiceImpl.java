@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -128,6 +129,44 @@ public class BookServiceImpl implements BookService {
         this.bookRepository.save(book);
 
         return Optional.of(book);
+    }
+
+    @Override
+    public void reserveBook(Long id) {
+
+        Book book = this.bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException(id));
+
+        int availableCopies = book.getAvailableCopies();
+
+        if(availableCopies - 1 < 0){
+            deleteById(id);
+            return;
+        }
+
+        int newAvailableCopies = availableCopies - 1;
+
+        book.setAvailableCopies(newAvailableCopies);
+
+        this.bookRepository.save(book);
+
+    }
+
+    @Override
+    public List<Category> listAllCategories() {
+
+        List<Category> allCategories = new ArrayList<>();
+
+        allCategories.add(Category.BIOGRAPHY);
+        allCategories.add(Category.CLASSICS);
+        allCategories.add(Category.DRAMA);
+        allCategories.add(Category.FANTASY);
+        allCategories.add(Category.HISTORY);
+        allCategories.add(Category.NOVEL);
+        allCategories.add(Category.THRILLER);
+
+        return allCategories;
+
     }
 
     @Override
